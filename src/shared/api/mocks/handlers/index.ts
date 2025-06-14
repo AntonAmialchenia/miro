@@ -17,4 +17,25 @@ export const handlers = [
   http.get("/boards", () => {
     return HttpResponse.json(boards);
   }),
+  http.post("/boards", async ({ request }) => {
+    const body = await request.json();
+    const board = {
+      id: crypto.randomUUID(),
+      name: body.name,
+    };
+    boards.push(board);
+    return HttpResponse.json(board);
+  }),
+  http.delete("/boards/{boardId}", ({ params }) => {
+    const boardId = params.boardId;
+    const boardIndex = boards.findIndex((board) => board.id === boardId);
+    if (boardIndex === -1) {
+      return HttpResponse.json(
+        { message: "Board not found", code: "NOT_FOUND" },
+        { status: 404 }
+      );
+    }
+    boards.splice(boardIndex, 1);
+    return HttpResponse.json({ message: "Board deleted", code: "OK" });
+  }),
 ];
