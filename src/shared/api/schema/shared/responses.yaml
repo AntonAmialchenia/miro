@@ -11,6 +11,13 @@ NotFoundError:
     application/json:
       schema:
         $ref: "#/schemas/Error"
+        
+BadRequestError:
+  description: Bad request
+  content:
+    application/json:
+      schema:
+        $ref: "#/schemas/Error"
 
 schemas:
   Error:

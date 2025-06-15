@@ -1,4 +1,4 @@
-import { HttpResponse } from "msw";
+import { delay, HttpResponse } from "msw";
 import { http } from "../http";
 import type { ApiSchemas } from "../../schema";
 
@@ -13,8 +13,9 @@ const boards: ApiSchemas["Board"][] = [
   },
 ];
 
-export const handlers = [
-  http.get("/boards", () => {
+export const boardsHandlers = [
+  http.get("/boards", async () => {
+    await delay(1000);
     return HttpResponse.json(boards);
   }),
   http.post("/boards", async ({ request }) => {
@@ -24,6 +25,7 @@ export const handlers = [
       name: body.name,
     };
     boards.push(board);
+    await delay(1000);
     return HttpResponse.json(board);
   }),
   http.delete("/boards/{boardId}", ({ params }) => {
