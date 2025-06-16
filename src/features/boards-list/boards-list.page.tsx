@@ -17,6 +17,7 @@ function BoardsListPage() {
       );
     },
   });
+
   const deleteBoardMutation = rqClient.useMutation(
     "delete",
     "/boards/{boardId}",

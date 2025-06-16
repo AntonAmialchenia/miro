@@ -1,6 +1,7 @@
 import { delay, HttpResponse } from "msw";
 import { http } from "../http";
 import type { ApiSchemas } from "../../schema";
+import { verifyTokenOrThrow } from "../session";
 
 const boards: ApiSchemas["Board"][] = [
   {
@@ -14,11 +15,13 @@ const boards: ApiSchemas["Board"][] = [
 ];
 
 export const boardsHandlers = [
-  http.get("/boards", async () => {
+  http.get("/boards", async ({ request }) => {
     await delay(1000);
+    await verifyTokenOrThrow(request);
     return HttpResponse.json(boards);
   }),
   http.post("/boards", async ({ request }) => {
+    await verifyTokenOrThrow(request);
     const body = await request.json();
     const board = {
       id: crypto.randomUUID(),
@@ -28,7 +31,8 @@ export const boardsHandlers = [
     await delay(1000);
     return HttpResponse.json(board);
   }),
-  http.delete("/boards/{boardId}", ({ params }) => {
+  http.delete("/boards/{boardId}", async ({ request, params }) => {
+    await verifyTokenOrThrow(request);
     const boardId = params.boardId;
     const boardIndex = boards.findIndex((board) => board.id === boardId);
     if (boardIndex === -1) {
