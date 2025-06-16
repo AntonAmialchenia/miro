@@ -24,7 +24,7 @@ export const authHandlers = [
     const user = mockUsers.find((u) => u.email === body.email);
     const storedPassword = userPasswords.get(body.email);
 
-    await delay(1000);
+    await delay(500);
 
     if (!user || !storedPassword || storedPassword !== body.password) {
       return HttpResponse.json(
@@ -58,7 +58,7 @@ export const authHandlers = [
   http.post("/auth/register", async ({ request }) => {
     const body = await request.json();
 
-    await delay(1000);
+    await delay(500);
 
     if (mockUsers.some((u) => u.email === body.email)) {
       return HttpResponse.json(
@@ -115,8 +115,6 @@ export const authHandlers = [
       if (!user) {
         throw new Error("User not found");
       }
-
-      await delay(1000);
 
       const { accessToken, refreshToken: newRefreshToken } =
         await generateTokens({

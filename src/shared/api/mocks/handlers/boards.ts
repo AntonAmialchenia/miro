@@ -16,7 +16,7 @@ const boards: ApiSchemas["Board"][] = [
 
 export const boardsHandlers = [
   http.get("/boards", async ({ request }) => {
-    await delay(1000);
+    await delay(500);
     await verifyTokenOrThrow(request);
     return HttpResponse.json(boards);
   }),
@@ -28,7 +28,7 @@ export const boardsHandlers = [
       name: body.name,
     };
     boards.push(board);
-    await delay(1000);
+    await delay(500);
     return HttpResponse.json(board);
   }),
   http.delete("/boards/{boardId}", async ({ request, params }) => {
