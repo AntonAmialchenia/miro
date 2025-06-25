@@ -1,27 +1,27 @@
 import { ArrowRightIcon, StickerIcon } from "lucide-react";
 import { useNodes } from "./nodes";
-import { useBoardViewState } from "./view-state";
+import { useViewModel } from "./view-model";
 import { useCanvasRect } from "./use-canvas-rect";
 import { useLayoutFocus } from "./use-layout-focus";
 import { ActionButton, Actions, Canvas, Dots, Layout, Sticker } from "./ui";
 
 function BoardPage() {
   const { nodes, addSticker } = useNodes();
-  const { viewState, goToAddSticker, goToIdle } = useBoardViewState();
+  const viewModel = useViewModel();
   const { canvasRef, canvasRect } = useCanvasRect();
   const focusLayoutRef = useLayoutFocus();
   return (
     <Layout
       ref={focusLayoutRef}
       onKeyDown={(e) => {
-        if (viewState.type === "add-sticker") {
+        if (viewModel.viewState.type === "add-sticker") {
           if (e.key === "Escape") {
-            goToIdle();
+            viewModel.goToIdle();
           }
         }
-        if (viewState.type === "idle") {
+        if (viewModel.viewState.type === "idle") {
           if (e.key === "s") {
-            goToAddSticker();
+            viewModel.goToAddSticker();
           }
         }
       }}
@@ -30,28 +30,46 @@ function BoardPage() {
       <Canvas
         ref={canvasRef}
         onClick={(e) => {
-          if (viewState.type === "add-sticker" && canvasRect) {
+          if (viewModel.viewState.type === "add-sticker" && canvasRect) {
             addSticker({
               x: e.clientX - canvasRect.x,
               y: e.clientY - canvasRect.y,
               text: "Новый стикер",
             });
-            goToIdle();
+            viewModel.goToIdle();
           }
         }}
       >
         {nodes.map(({ id, x, y, text }) => (
-          <Sticker key={id} text={text} x={x} y={y} />
+          <Sticker
+            key={id}
+            text={text}
+            x={x}
+            y={y}
+            selected={
+              viewModel.viewState.type === "idle" &&
+              viewModel.viewState.selectedIds.has(id)
+            }
+            onClick={(e) => {
+              if (viewModel.viewState.type === "idle") {
+                if (e.ctrlKey || e.shiftKey) {
+                  viewModel.selection([id], "toggle");
+                } else {
+                  viewModel.selection([id], "replace");
+                }
+              }
+            }}
+          />
         ))}
       </Canvas>
       <Actions>
         <ActionButton
-          isActive={viewState.type === "add-sticker"}
+          isActive={viewModel.viewState.type === "add-sticker"}
           onClick={() => {
-            if (viewState.type === "add-sticker") {
-              goToIdle();
+            if (viewModel.viewState.type === "add-sticker") {
+              viewModel.goToIdle();
             } else {
-              goToAddSticker();
+              viewModel.goToAddSticker();
             }
           }}
         >
