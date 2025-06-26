@@ -23,6 +23,25 @@ export function Dots() {
   );
 }
 
+export function Overlay({
+  onClick,
+  onMouseDown,
+  onMouseUp,
+}: {
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
+}) {
+  return (
+    <div
+      className="absolute inset-0"
+      onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+    />
+  );
+}
+
 export function Canvas({
   children,
   ref,
@@ -48,7 +67,7 @@ export function Sticker({
   text: string;
   x: number;
   y: number;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   selected?: boolean;
 }) {
   return (
@@ -79,8 +98,8 @@ export function ActionButton({
   onClick,
 }: {
   children: React.ReactNode;
-  isActive: boolean;
-  onClick: () => void;
+  isActive?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
     <Button
