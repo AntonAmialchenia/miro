@@ -1,3 +1,5 @@
+import type { Rect } from "../domain/rect";
+
 type ViewModeNode = {
   id: string;
   x: number;
@@ -9,6 +11,7 @@ type ViewModeNode = {
 
 export type ViewModel = {
   nodes: ViewModeNode[];
+  selectionWindow?: Rect;
   layout?: {
     onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   };
@@ -19,6 +22,11 @@ export type ViewModel = {
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
     onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
     onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
+    onMouseMove?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  };
+  window?: {
+    onMouseMove?: (e: MouseEvent) => void;
+    onMouseUp?: (e: MouseEvent) => void;
   };
   actions?: {
     addSticker?: {
