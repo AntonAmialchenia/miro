@@ -2,6 +2,9 @@ import { ArrowRightIcon, StickerIcon } from "lucide-react";
 import { useNodes } from "./model/nodes";
 import { useCanvasRect } from "./hooks/use-canvas-rect";
 import { useLayoutFocus } from "./hooks/use-layout-focus";
+import { SelectionWindow } from "./ui/selection-window";
+import { useViewModel } from "./view-model/use-view-model";
+import { useWindowEvents } from "./hooks/use-window-events";
 import {
   ActionButton,
   Actions,
@@ -9,11 +12,8 @@ import {
   Dots,
   Layout,
   Overlay,
-  SelectionWindow,
   Sticker,
 } from "./ui";
-import { useViewModel } from "./view-model/use-view-model";
-import { useWindowEvents } from "./hooks/use-window-events";
 
 function BoardPage() {
   const nodesModel = useNodes();
