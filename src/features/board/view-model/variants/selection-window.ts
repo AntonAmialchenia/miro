@@ -1,5 +1,11 @@
 import type { Point } from "../../domain/point";
-import { createFromPoints, isPointInRect } from "../../domain/rect";
+import {
+  createFromPoints,
+  createRectFromDimensions,
+  isPointInRect,
+  isRectsIntersecting,
+  type Rect,
+} from "../../domain/rect";
 import { pointOnScreenToCanvasPoint } from "../../domain/screen-to-canvas";
 import type { ViewModelParams } from "../view-model-params";
 import { goToIdle } from "./idle";
@@ -16,17 +22,30 @@ export function useSelectionWindowViewModel({
   nodesModel,
   setViewState,
   canvasRect,
+  nodesDimensions,
 }: ViewModelParams) {
-  return (state: SelectionWindowViewState) => {
-    const rect = createFromPoints(state.startPoint, state.endPoint);
-    return {
-      nodes: nodesModel.nodes.map((node) => ({
+  const getNodes = (state: SelectionWindowViewState, selectionRect: Rect) => {
+    return nodesModel.nodes.map((node) => {
+      const nodeDimensions = nodesDimensions[node.id];
+
+      const nodeRect = createRectFromDimensions(node, nodeDimensions);
+
+      return {
         ...node,
         isSelected:
-          isPointInRect(node, rect) || state.initialSelectedIds.has(node.id),
-      })),
-      selectionWindow: rect,
+          isRectsIntersecting(nodeRect, selectionRect) ||
+          state.initialSelectedIds.has(node.id),
+      };
+    });
+  };
 
+  return (state: SelectionWindowViewState) => {
+    const rect = createFromPoints(state.startPoint, state.endPoint);
+    const nodes = getNodes(state, rect);
+
+    return {
+      nodes,
+      selectionWindow: rect,
       window: {
         onMouseMove: (e: MouseEvent) => {
           const currentPoint = pointOnScreenToCanvasPoint(
@@ -39,7 +58,7 @@ export function useSelectionWindowViewModel({
           setViewState({ ...state, endPoint: currentPoint });
         },
         onMouseUp: () => {
-          const nodesIdsInRect = nodesModel.nodes
+          const nodesIdsInRect = nodes
             .filter((node) => isPointInRect(node, rect))
             .map((node) => node.id);
           setViewState(

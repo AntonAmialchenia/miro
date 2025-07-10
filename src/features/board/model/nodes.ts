@@ -41,9 +41,15 @@ export function useNodes() {
       },
     ]);
   };
+
+  const deleteNodes = (ids: string[]) => {
+    setNodes((nodes) => nodes.filter((node) => !ids.includes(node.id)));
+  };
+
   return {
     nodes,
     addSticker,
+    deleteNodes,
   };
 }
 

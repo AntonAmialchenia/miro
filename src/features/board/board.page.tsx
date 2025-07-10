@@ -14,15 +14,18 @@ import {
   Overlay,
   Sticker,
 } from "./ui";
+import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
 
 function BoardPage() {
   const nodesModel = useNodes();
   const { canvasRef, canvasRect } = useCanvasRect();
   const focusLayoutRef = useLayoutFocus();
+  const { nodeRef, nodesDimensions } = useNodesDimensions();
 
   const viewModel = useViewModel({
     nodesModel,
     canvasRect,
+    nodesDimensions,
   });
 
   useWindowEvents(viewModel);
@@ -44,6 +47,8 @@ function BoardPage() {
             y={y}
             selected={isSelected}
             onClick={onClick}
+            ref={nodeRef}
+            id={id}
           />
         ))}
       </Canvas>

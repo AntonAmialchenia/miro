@@ -1,8 +1,8 @@
-export { Actions } from "./Actions";
+export { Actions } from "./actions";
 export { ActionButton } from "./action-button";
-export { Canvas } from "./Canvas";
-export { Dots } from "./Dots";
-export { Layout } from "./Layout";
-export { Overlay } from "./Overlay";
+export { Canvas } from "./canvas";
+export { Dots } from "./dots";
+export { Layout } from "./layout";
+export { Overlay } from "./overlay";
 export { SelectionWindow } from "./selection-window";
-export { Sticker } from "./Sticker";
+export { Sticker } from "./sticker";
