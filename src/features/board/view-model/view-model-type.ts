@@ -9,6 +9,8 @@ type ViewModeNode = {
   isEditing?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onTextChange?: (text: string) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export type ViewModel = {
@@ -24,7 +26,6 @@ export type ViewModel = {
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
     onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
     onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
-    onMouseMove?: (e: React.MouseEvent<HTMLDivElement>) => void;
   };
   window?: {
     onMouseMove?: (e: MouseEvent) => void;

@@ -52,11 +52,31 @@ export function useNodes() {
     setNodes((nodes) => nodes.filter((node) => !ids.includes(node.id)));
   };
 
+  const updateNodesPosition = (
+    position: {
+      id: string;
+      x: number;
+      y: number;
+    }[]
+  ) => {
+    const record = Object.fromEntries(position.map((p) => [p.id, p]));
+    setNodes((lastNodes) =>
+      lastNodes.map((node) => {
+        const newPosition = record[node.id];
+        if (newPosition) {
+          return { ...node, x: newPosition.x, y: newPosition.y };
+        }
+        return node;
+      })
+    );
+  };
+
   return {
     nodes,
     addSticker,
     deleteNodes,
     updateStickerText,
+    updateNodesPosition,
   };
 }
 

@@ -7,14 +7,23 @@ import { useGoToEditSticker } from "./use-go-to-edit-sticker";
 import { useGoToAddSticker } from "./use-go-to-add-sticker";
 import { useMouseDown } from "./use-mouse-down";
 import { useGoToSelectionWindow } from "./use-go-to-selection-window";
+import { useGoToNodesDragging } from "./use-go-to-nodes-dragging";
 
 export type IdleViewState = {
   type: "idle";
   selectedIds: Selection;
-  mouseDown?: {
-    x: number;
-    y: number;
-  };
+  mouseDown?:
+    | {
+        type: "overlay";
+        x: number;
+        y: number;
+      }
+    | {
+        type: "node";
+        x: number;
+        y: number;
+        nodeId: string;
+      };
 };
 
 export function useIdleViewModel(params: ViewModelParams) {
@@ -22,7 +31,7 @@ export function useIdleViewModel(params: ViewModelParams) {
 
   const selection = useSelection(params);
   const deleteSelected = useDeleteSelected(params);
-
+  const goToNodesDragging = useGoToNodesDragging(params);
   const goToEditSticker = useGoToEditSticker(params);
   const goToAddSticker = useGoToAddSticker(params);
   const mouseDown = useMouseDown(params);
@@ -32,7 +41,9 @@ export function useIdleViewModel(params: ViewModelParams) {
     nodes: nodesModel.nodes.map((node) => ({
       ...node,
       isSelected: selection.isSelected(node.id, idleState),
-      onClick: (e) => {
+      onMouseDown: (e) => mouseDown.handleNodeMouseDown(idleState, node.id, e),
+      onMouseUp: (e) => {
+        if (!mouseDown.getIsStickerMouseDown(idleState, node.id)) return;
         const clickResult = goToEditSticker.handleNodeClick(
           idleState,
           node.id,
@@ -44,9 +55,6 @@ export function useIdleViewModel(params: ViewModelParams) {
     })),
     layout: {
       onKeyDown: (e) => {
-        const keyDownResult = goToEditSticker.handleKeyDown(idleState, e);
-        if (keyDownResult.preventNext) return;
-
         deleteSelected.handleKeyDown(idleState, e);
         goToAddSticker.handleKeyDown(e);
       },
@@ -56,8 +64,10 @@ export function useIdleViewModel(params: ViewModelParams) {
       onMouseUp: () => selection.handleOverlayMouseUp(idleState),
     },
     window: {
-      onMouseMove: (e) =>
-        goToSelectionWindow.handleWindowMouseMove(idleState, e),
+      onMouseMove: (e) => {
+        goToNodesDragging.handleWindowMouseMove(idleState, e);
+        goToSelectionWindow.handleWindowMouseMove(idleState, e);
+      },
       onMouseUp: () => mouseDown.handleWindowMouseUp(idleState),
     },
     actions: {

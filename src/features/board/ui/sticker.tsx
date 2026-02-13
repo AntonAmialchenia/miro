@@ -7,22 +7,25 @@ export function Sticker({
   x,
   y,
   onClick,
-  selected,
+  isSelected,
   ref,
   id,
   isEditing,
   onTextChange,
+  onMouseDown,
+  onMouseUp,
 }: {
   id: string;
   text: string;
   x: number;
   y: number;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  selected?: boolean;
   ref?: React.Ref<HTMLButtonElement>;
   isSelected?: boolean;
   isEditing?: boolean;
   onTextChange?: (text: string) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   return (
     <button
@@ -30,10 +33,12 @@ export function Sticker({
       ref={ref}
       className={clsx(
         "absolute bg-yellow-300 px-2 py-4 rounded-xs shadow-md",
-        selected && "outline outline-2 outline-blue-500"
+        isSelected && "outline outline-2 outline-blue-500"
       )}
       style={{ transform: `translate(${x}px, ${y}px)` }}
       onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
     >
       <TextareaAutoSize
         value={text}
@@ -69,7 +74,7 @@ function TextareaAutoSize({
     <div className="relative">
       <div
         ref={ref}
-        className={cn("whitespace-pre-wrap", !isEditing && "opacity-0")}
+        className={cn("whitespace-pre-wrap", isEditing && "opacity-0")}
       >
         {value}
       </div>
